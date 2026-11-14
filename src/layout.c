@@ -17,7 +17,8 @@ arrange(Monitor *m)
 					|| wl_list_empty(&c->image_capture_source->resources)));
 	}
 
-	strncpy(m->ltsymbol, m->lt[m->sellt]->symbol, LENGTH(m->ltsymbol));
+	snprintf(m->ltsymbol, LENGTH(m->ltsymbol), "%s",
+			m->lt[m->sellt]->symbol);
 
 	if (m->lt[m->sellt]->arrange)
 		m->lt[m->sellt]->arrange(m);
@@ -109,7 +110,8 @@ setlayout(const Arg *arg)
 		P.selmon->sellt ^= 1;
 	if (arg && arg->v)
 		P.selmon->lt[P.selmon->sellt] = (Layout *)arg->v;
-	strncpy(P.selmon->ltsymbol, P.selmon->lt[P.selmon->sellt]->symbol, LENGTH(P.selmon->ltsymbol));
+	snprintf(P.selmon->ltsymbol, LENGTH(P.selmon->ltsymbol), "%s",
+			P.selmon->lt[P.selmon->sellt]->symbol);
 	arrange(P.selmon);
 	printstatus();
 }

@@ -536,7 +536,17 @@ void xwaylandready(struct wl_listener *listener, void *data);
 
 /* Compile-time configuration and client helpers.  config.h needs the layout
  * function declarations above; client.h/ime.h need the core types. */
+/* config.h declares every knob as a file-scope static, so any given module
+ * uses only a subset of them.  Silence the expected unused-variable warnings
+ * from GCC without weakening the warning for module code. */
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#endif
 #include "config.h"
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
 #include "client.h"
 #include "ime.h"
 
