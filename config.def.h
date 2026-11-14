@@ -114,6 +114,12 @@ LIBINPUT_CONFIG_TAP_MAP_LMR -- 1/2/3 finger tap maps to left/middle/right
 */
 static const enum libinput_config_tap_button_map button_map = LIBINPUT_CONFIG_TAP_MAP_LRM;
 
+/* Use hardware cursor planes when the GPU provides them.  QEMU's virtio-gpu
+ * displays those planes upside down, which also makes clicks land above the
+ * visible pointer.  Pluto recognizes that driver and falls back to software
+ * cursors automatically.  Set this to 0 to force software cursors everywhere. */
+static const int hardware_cursors = 1;
+
 /* dwm's default is Mod1; Pluto uses the Windows/Super key like the river
  * configuration.  Use WLR_MODIFIER_ALT to get dwl's original default. */
 #define MODKEY WLR_MODIFIER_LOGO

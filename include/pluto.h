@@ -326,6 +326,7 @@ struct Pluto {
 	struct wlr_pointer_constraint_v1 *active_constraint;
 	struct wlr_cursor *cursor;
 	struct wlr_xcursor_manager *cursor_mgr;
+	int hardware_cursors;
 	struct wlr_scene_rect *root_bg;
 	struct wlr_session_lock_manager_v1 *session_lock_mgr;
 	struct wlr_scene_rect *locked_bg;
@@ -450,6 +451,7 @@ void forgetoffmons(void);
 void fullscreennotify(struct wl_listener *listener, void *data);
 void gpureset(struct wl_listener *listener, void *data);
 void handlesig(int signo);
+bool hardware_cursor_is_flipped(void);
 void incnmaster(const Arg *arg);
 void inputdevice(struct wl_listener *listener, void *data);
 const Key *keybinding(uint32_t mods, xkb_keysym_t sym);

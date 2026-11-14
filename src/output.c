@@ -1,4 +1,6 @@
 /* Outputs and monitors: DRM/output lifecycle, layout and output-management protocol. */
+#include <dirent.h>
+
 #include "pluto.h"
 
 void
@@ -125,6 +127,44 @@ closemon(Monitor *m)
 	printstatus();
 }
 
+bool
+hardware_cursor_is_flipped(void)
+{
+	/* QEMU's virtio-gpu scans out hardware cursor buffers upside down.  The
+	 * visible pointer is then mirrored below the real hotspot, so clicks seem
+	 * to land above it.  The driver is a PCI display controller from the
+	 * virtio vendor, which is what /sys/class/drm/cardN/device/uevent shows. */
+	DIR *dir;
+	struct dirent *entry;
+	FILE *uevent;
+	char path[PATH_MAX], line[256];
+	bool virtio, display, flipped = false;
+
+	if (!(dir = opendir("/sys/class/drm")))
+		return false;
+	while (!flipped && (entry = readdir(dir))) {
+		/* Match cardN, not the cardN-connector entries. */
+		if (strncmp(entry->d_name, "card", 4) != 0 ||
+				strchr(entry->d_name + 4, '-') != NULL)
+			continue;
+		snprintf(path, sizeof(path), "/sys/class/drm/%s/device/uevent",
+			entry->d_name);
+		if (!(uevent = fopen(path, "r")))
+			continue;
+		virtio = display = false;
+		while (fgets(line, sizeof(line), uevent)) {
+			if (strncmp(line, "DRIVER=virtio-pci", 17) == 0)
+				virtio = true;
+			else if (strncmp(line, "PCI_CLASS=30000", 15) == 0)
+				display = true;
+		}
+		fclose(uevent);
+		flipped = virtio && display;
+	}
+	closedir(dir);
+	return flipped;
+}
+
 void
 createmon(struct wl_listener *listener, void *data)
 {
@@ -138,6 +178,11 @@ createmon(struct wl_listener *listener, void *data)
 
 	if (!wlr_output_init_render(wlr_output, P.alloc, P.drw))
 		return;
+
+	/* Software cursors are composited into the frame, so they cannot be
+	 * mirrored by a driver's cursor plane. */
+	if (!P.hardware_cursors)
+		wlr_output_lock_software_cursors(wlr_output, true);
 
 	m = wlr_output->data = ecalloc(1, sizeof(*m));
 	m->wlr_output = wlr_output;

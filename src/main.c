@@ -108,6 +108,13 @@ setup(void)
 
 	wlr_log_init(log_level, NULL);
 
+	P.hardware_cursors = hardware_cursors;
+	if (P.hardware_cursors && hardware_cursor_is_flipped()) {
+		P.hardware_cursors = 0;
+		wlr_log(WLR_INFO, "virtio-gpu cursor plane is flipped; "
+			"using software cursors");
+	}
+
 	/* The Wayland display is managed by libwayland. It handles accepting
 	 * clients from the Unix socket, managing Wayland globals, and so on. */
 	P.dpy = wl_display_create();

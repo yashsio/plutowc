@@ -84,6 +84,14 @@ default so taps are not swallowed by clickpad software-button areas.
 
 Run `pluto -d` to see the settings actually applied to each pointer device.
 
+## Cursor
+
+Hardware cursor planes are used by default.  QEMU's virtio-gpu displays such
+planes upside down (which also makes clicks land above the visible pointer);
+Pluto detects that driver and falls back to software cursors automatically.
+Force software cursors everywhere by setting `hardware_cursors = 0` in
+`config.h` if your GPU has the same problem.
+
 ## License
 
 Pluto is distributed under the GNU General Public License v3.0 or later, the
