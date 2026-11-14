@@ -43,6 +43,7 @@ Users are encouraged to customize
 .Nm
 by editing the sources, in particular
 .Pa config.h .
+The default modifier is the Windows/Super key (Mod4).
 The default key bindings are as follows:
 .Bl -tag -width 20n -offset indent -compact
 .It Mod-[1-9]
@@ -50,12 +51,12 @@ Show only all windows with a tag.
 .It Mod-Ctrl-[1-9]
 Show all windows with a tag.
 .It Mod-Shift-[1-9]
-Move window to a single tag.
+Move the focused window to a single tag and follow it there.
 .It Mod-Ctrl-Shift-[1-9]
 Toggle tag for window.
 .It Mod-p
 Spawn
-.Xr wmenu-run 1 .
+.Xr fuzzel 1 .
 .It Mod-Shift-Return
 Spawn
 .Xr foot 1 .
@@ -72,7 +73,7 @@ Show only all windows with previous tag.
 .It Mod-Shift-c
 Close window.
 .It Mod-t
-Switch to tabbed layout.
+Switch to tiling layout.
 .It Mod-f
 Switch to floating layout.
 .It Mod-m
@@ -81,12 +82,14 @@ Switch to monocle layout.
 Switch to previous layout.
 .It Mod-Shift-Space
 Toggle floating state of window.
-.It Mod-e
+.It Mod-Shift-f
 Toggle fullscreen state of window.
+.It Mod-e
+Toggle fullscreen state of window (dwl-compatible alias).
 .It Mod-0
 Show all windows.
 .It Mod-Shift-0
-Set all tags for window.
+Move the focused window to all tags and follow it there.
 .It Mod-,
 Move focus to previous monitor.
 .It Mod-.

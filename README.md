@@ -7,7 +7,11 @@ splitting the implementation into explicit, separately testable subsystems.
 
 The layout model is dwm/Pluto-style: nine tags per output, a master/stack
 `tile` layout, `monocle`, and a floating layout.  Gaps, borders, `mfact` and
-`nmaster` are compile-time configuration in `config.h`.
+`nmaster` are compile-time configuration in `config.h`.  The shipped defaults
+mirror the dwm/river Pluto experience: Mod4 (Super) as `MODKEY`, `fuzzel` as
+the launcher, `foot` as the terminal, dwm's border colors, and
+`Mod+Shift+<tag>` tagging the focused window and following it to that tag
+(`followtag`).
 
 - One `struct Pluto P` owns all compositor state.
 - One source file per subsystem under `src/`.
@@ -68,6 +72,17 @@ pluto -v                       # print the version
 
 `gappx` is the space between tiled clients and `outergappx` the space between
 clients and the usable-area edge.  `borderpx` is the server-side border width.
+
+## Touchpad
+
+Touchpad settings are applied to every libinput pointer in `config.h`:
+`tap_to_click`, `tap_and_drag`, `drag_lock`, `natural_scrolling`,
+`disable_while_typing`, `left_handed`, `middle_button_emulation`,
+`scroll_method` and `click_method`.  The defaults enable tap-to-click and
+tap-and-drag with drag lock off, and leave the click method at the device
+default so taps are not swallowed by clickpad software-button areas.
+
+Run `pluto -d` to see the settings actually applied to each pointer device.
 
 ## License
 

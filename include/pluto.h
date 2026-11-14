@@ -23,6 +23,7 @@
  * See LICENSE file for copyright and license details.
  */
 #include <getopt.h>
+#include <stdarg.h>
 #include <libinput.h>
 #include <limits.h>
 #include <linux/input-event-codes.h>
@@ -497,6 +498,7 @@ struct wlr_scene_node *snapshot(struct wlr_scene_node *node,
 void spawn(const Arg *arg);
 void startdrag(struct wl_listener *listener, void *data);
 void tag(const Arg *arg);
+void followtag(const Arg *arg);
 void tagmon(const Arg *arg);
 void tile(Monitor *m);
 void togglefloating(const Arg *arg);

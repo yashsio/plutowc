@@ -382,18 +382,37 @@ destroykeyboardgroup(struct wl_listener *listener, void *data)
 	free(group);
 }
 
+/* wlr_log() is variadic, which trips -Wpedantic in wlroots' own header.
+ * Route device diagnostics through wlr_vlog() instead. */
+static void
+pointerlog(enum wlr_log_importance verb, const char *fmt, ...)
+{
+	va_list args;
+
+	va_start(args, fmt);
+	_wlr_vlog(verb, fmt, args);
+	va_end(args);
+}
+
 void
 createpointer(struct wlr_pointer *pointer)
 {
 	struct libinput_device *device;
+	const char *name;
+
 	if (wlr_input_device_is_libinput(&pointer->base)
 			&& (device = wlr_libinput_get_device_handle(&pointer->base))) {
+		name = libinput_device_get_name(device);
 
 		if (libinput_device_config_tap_get_finger_count(device)) {
 			libinput_device_config_tap_set_enabled(device, tap_to_click);
 			libinput_device_config_tap_set_drag_enabled(device, tap_and_drag);
 			libinput_device_config_tap_set_drag_lock_enabled(device, drag_lock);
 			libinput_device_config_tap_set_button_map(device, button_map);
+			pointerlog(WLR_DEBUG, "pointer %s: tap-to-click %d, tap-and-drag %d, drag-lock %d",
+					name, tap_to_click, tap_and_drag, drag_lock);
+		} else if (tap_to_click) {
+			pointerlog(WLR_INFO, "pointer %s does not support tap-to-click", name);
 		}
 
 		if (libinput_device_config_scroll_has_natural_scroll(device))
@@ -411,8 +430,13 @@ createpointer(struct wlr_pointer *pointer)
 		if (libinput_device_config_scroll_get_methods(device) != LIBINPUT_CONFIG_SCROLL_NO_SCROLL)
 			libinput_device_config_scroll_set_method(device, scroll_method);
 
-		if (libinput_device_config_click_get_methods(device) != LIBINPUT_CONFIG_CLICK_METHOD_NONE)
-			libinput_device_config_click_set_method(device, click_method);
+		/* Leave the click method alone unless config.h picks one.  Most
+		 * modern clickpads default to clickfinger, which (unlike
+		 * button areas) does not swallow taps in the bottom of the pad. */
+		if (click_method >= 0
+				&& libinput_device_config_click_get_methods(device) != LIBINPUT_CONFIG_CLICK_METHOD_NONE)
+			libinput_device_config_click_set_method(device,
+					(enum libinput_config_click_method)click_method);
 
 		if (libinput_device_config_send_events_get_modes(device))
 			libinput_device_config_send_events_set_mode(device, send_events_mode);
@@ -421,6 +445,10 @@ createpointer(struct wlr_pointer *pointer)
 			libinput_device_config_accel_set_profile(device, accel_profile);
 			libinput_device_config_accel_set_speed(device, accel_speed);
 		}
+
+		pointerlog(WLR_DEBUG, "pointer %s: click method %d, scroll method %d",
+				name, libinput_device_config_click_get_method(device),
+				libinput_device_config_scroll_get_method(device));
 	}
 
 	wlr_cursor_attach_input_device(P.cursor, &pointer->base);

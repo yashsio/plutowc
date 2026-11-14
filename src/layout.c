@@ -154,6 +154,29 @@ tag(const Arg *arg)
 }
 
 void
+followtag(const Arg *arg)
+{
+	Monitor *m = P.selmon;
+	Client *sel;
+	uint32_t tags;
+
+	if (!m || (tags = arg->ui & TAGMASK) == 0 || !(sel = focustop(m)))
+		return;
+
+	/* Tag the focused window and follow it to the new tag.  Switching the
+	 * view the same way view() does keeps the old tag reachable with
+	 * Mod+Tab. */
+	sel->tags = tags;
+	if (tags != m->tagset[m->seltags]) {
+		m->seltags ^= 1;
+		m->tagset[m->seltags] = tags;
+	}
+	focusclient(focustop(m), NULL, 1);
+	arrange(m);
+	printstatus();
+}
+
+void
 toggletag(const Arg *arg)
 {
 	uint32_t newtags;

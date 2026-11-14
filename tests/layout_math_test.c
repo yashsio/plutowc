@@ -100,6 +100,19 @@ test_invalid_indices_are_empty(void)
 	assert(layout_monocle_slot(area(0, 0, 100, 80), 0, 0, 4).width == 0);
 }
 
+static void
+test_zero_gaps_match_dwm_geometry(void)
+{
+	const struct TileOptions opts = {.nmaster = 1, .mfact = 0.6f, .gap = 0, .outergap = 0};
+	struct Box master = layout_tile_slot(area(0, 0, 100, 80), 2, 0, &opts);
+	struct Box stack = layout_tile_slot(area(0, 0, 100, 80), 2, 1, &opts);
+
+	assert(master.x == 0 && master.y == 0);
+	assert(master.width == 60 && master.height == 80);
+	assert(stack.x == 60 && stack.y == 0);
+	assert(stack.width == 40 && stack.height == 80);
+}
+
 int
 main(void)
 {
@@ -111,6 +124,7 @@ main(void)
 	test_zero_master_stacks_vertically();
 	test_monocle_uses_usable_area();
 	test_invalid_indices_are_empty();
+	test_zero_gaps_match_dwm_geometry();
 
 	puts("layout_math: all tests passed");
 	return 0;
