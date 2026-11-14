@@ -30,5 +30,8 @@ jobs:
         run: |
           export XDG_RUNTIME_DIR="$(mktemp -d)"
           export WLR_BACKENDS=headless WLR_RENDERER=pixman WLR_LIBINPUT_NO_DEVICES=1
-          timeout 3 ./pluto
-          test $? -eq 124
+          ./pluto &
+          pid=$!
+          sleep 2
+          kill -TERM "$pid"
+          wait "$pid"
