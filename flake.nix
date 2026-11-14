@@ -29,6 +29,7 @@
               pixman
               libdrm
               udev
+              libxcb-wm
             ];
 
             makeFlags = [
@@ -59,7 +60,7 @@
 
       devShells = forAllSystems (pkgs: {
         default = pkgs.mkShell {
-          inputsFrom = [ self.packages.${pkgs.system}.pluto ];
+          inputsFrom = [ self.packages.${pkgs.stdenv.hostPlatform.system}.pluto ];
           packages = with pkgs; [
             clang-tools
             gdb
@@ -68,7 +69,7 @@
       });
 
       checks = forAllSystems (pkgs: {
-        inherit (self.packages.${pkgs.system}) pluto;
+        inherit (self.packages.${pkgs.stdenv.hostPlatform.system}) pluto;
       });
     };
 }

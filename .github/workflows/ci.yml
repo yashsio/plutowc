@@ -20,3 +20,15 @@ jobs:
 
       - name: Flake checks
         run: nix flake check -L
+
+      - name: Build with XWayland support
+        run: |
+          nix develop -c make clean
+          nix develop -c make XWAYLAND=-DXWAYLAND XLIBS="xcb xcb-icccm"
+
+      - name: Headless smoke test
+        run: |
+          export XDG_RUNTIME_DIR="$(mktemp -d)"
+          export WLR_BACKENDS=headless WLR_RENDERER=pixman WLR_LIBINPUT_NO_DEVICES=1
+          timeout 3 ./pluto
+          test $? -eq 124
