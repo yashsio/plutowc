@@ -1,5 +1,5 @@
 name: Bug Report
-about: Something in dwl isn't working correctly
+about: Something in Pluto isn't working correctly
 title:
 labels:
     - 'Kind/Bug'
@@ -7,15 +7,15 @@ body:
     - type: markdown
       attributes:
           value: |
-              - Only report bugs that can be reproduced on the main (or wlroots-next) branch without patches.
-              - Proprietary graphics drivers, including nvidia, are not supported. Please use the open source equivalents, such as nouveau, if you would like to use dwl.
+              - Only report bugs that can be reproduced on the pluto branch without patches.
+              - Proprietary graphics drivers, including nvidia, are not supported. Please use the open source equivalents, such as nouveau, if you would like to use Pluto.
               - Report patch issues to their respective authors.
 
     - type: input
-      id: dwl_version
+      id: pluto_version
       attributes:
-          label: 'dwl version:'
-          placeholder: '`dwl -v`'
+          label: 'Pluto version:'
+          placeholder: '`pluto -v`'
       validations:
           required: true
 
@@ -46,8 +46,8 @@ body:
       attributes:
           label: Debug Log
           value: |
-              Run `dwl -d 2> ~/dwl.log` from a TTY and attach the **full** (do not truncate it) file here, or upload it to a pastebin.
-              Please try to keep the reproduction as brief as possible and exit dwl.
+              Run `pluto -d 2> ~/pluto.log` from a TTY and attach the **full** (do not truncate it) file here, or upload it to a pastebin.
+              Please try to keep the reproduction as brief as possible and exit Pluto.
       validations:
           required: false
 
@@ -56,7 +56,7 @@ body:
       attributes:
           label: Stack Trace
           value: |
-              - Only required if dwl crashes.
-              - If the lines mentioning dwl or wlroots have `??`. Please compile both dwl and wlroots from source (enabling debug symbols) and try to reproduce.
+              - Only required if Pluto crashes.
+              - If the lines mentioning Pluto or wlroots have `??`. Please compile both Pluto and wlroots from source (enabling debug symbols) and try to reproduce.
       validations:
           required: false
