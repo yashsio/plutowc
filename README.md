@@ -17,7 +17,8 @@ the launcher, `foot` as the terminal, dwm's border colors, and
 - One source file per subsystem under `src/`.
 - Pure layout geometry lives in `src/layout_math.c` and is unit tested.
 - No mutable file-scope globals in the modules.
-- Upstream dwl history is retained so the fork stays rebasable.
+- A separate `dwl-upstream` branch retains upstream dwl history for reference
+  and wlroots-adaptation tracking; `main` is a clean single-commit import.
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the module map and invariants, and
 [PORTING.md](PORTING.md) for the upstream-tracking workflow.

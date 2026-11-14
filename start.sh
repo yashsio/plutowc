@@ -8,16 +8,12 @@
 #
 # Apps are backgrounded so this script can exit; Pluto keeps running.
 
-# Terminal
-foot &
-
-# Application launcher (optional)
-# fuzzel &
-
-# Status bar backend (uncomment when pluto-bar's dwl backend is wired up)
-# pluto-status | pluto-bar &
-
-# Notifications (optional)
-# mako &
+# Add services below
+foot --server &
+mako &
+swaybg -m fill -i "$(cat "$HOME/.local/state/wallpaper")" &
+wl-paste --type text --watch cliphist store &
+wl-paste --type image --watch cliphist store &
+wlsunset -l 28.65 -L 77.20 &
 
 exit 0
