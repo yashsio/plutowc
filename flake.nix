@@ -47,7 +47,6 @@
 
             meta = with pkgs.lib; {
               description = "Small, modular dynamic tiling Wayland compositor";
-              homepage = "https://github.com/plutowm/pluto";
               license = licenses.gpl3Plus;
               platforms = platforms.linux;
               mainProgram = "pluto";

@@ -1,5 +1,9 @@
 # Changelog
 
+> This file records upstream dwl releases and is retained so the fork history
+> stays traceable.  Pluto's own changes live in the git history; the current
+> release line is declared in `config.mk`.
+
 * [0.9](#0.9)
 * [0.8](#0.8)
 * [0.7](#0.7)
