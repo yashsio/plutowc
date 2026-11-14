@@ -56,9 +56,13 @@ Start `pluto` from a TTY, or select it from your display manager:
 ```sh
 pluto                          # start the compositor
 pluto -s "foot &"              # run a startup command
+pluto -s "$HOME/.config/pluto/start.sh"   # run an autostart script
 pluto -d                       # debug logging
 pluto -v                       # print the version
 ```
+
+A sample `start.sh` is shipped in the repo root; copy it to
+`~/.config/pluto/start.sh` and edit it to launch your apps, bar, etc.
 
 ## Layout
 
