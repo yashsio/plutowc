@@ -1,0 +1,7 @@
+pluto
+build/
+config.h
+.ccls-cache
+result
+result-*
+pluto-*.tar.gz
