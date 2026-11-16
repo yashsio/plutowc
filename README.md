@@ -17,8 +17,8 @@ the launcher, `foot` as the terminal, dwm's border colors, and
 - One source file per subsystem under `src/`.
 - Pure layout geometry lives in `src/layout_math.c` and is unit tested.
 - No mutable file-scope globals in the modules.
-- A separate `dwl-upstream` branch retains upstream dwl history for reference
-  and wlroots-adaptation tracking; `main` is a clean single-commit import.
+- The repository has a single `main` branch and does not retain upstream dwl
+  history.  See [PORTING.md](PORTING.md) for the patch-porting workflow.
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the module map and invariants, and
 [PORTING.md](PORTING.md) for the upstream-tracking workflow.
@@ -38,16 +38,24 @@ make test       # runs the pure layout-geometry tests
 sudo make install
 ```
 
+With Nix:
+
+```sh
+nix build .#pluto           # Wayland-only build
+nix build .#pluto-xwayland  # XWayland enabled
+```
+
 `make` creates `config.h` from `config.def.h` if it does not exist.  Edit
 `config.h` for your keybindings, rules, colors, gaps and layout defaults, then
 rebuild.  Everything is compile-time configuration; there is no runtime config
 file.
 
-XWayland is disabled by default.  Enable it in `config.mk`:
+The plain `make` build is Wayland-only by default.  The `pluto-xwayland` Nix
+package enables XWayland; for a manual build, pass it on the command line (or
+uncomment the entries in `config.mk`):
 
-```make
-XWAYLAND = -DXWAYLAND
-XLIBS = xcb xcb-icccm
+```sh
+make XWAYLAND=-DXWAYLAND XLIBS="xcb xcb-icccm"
 ```
 
 ## Running
@@ -62,8 +70,9 @@ pluto -d                       # debug logging
 pluto -v                       # print the version
 ```
 
-A sample `start.sh` is shipped in the repo root; copy it to
-`~/.config/pluto/start.sh` and edit it to launch your apps, bar, etc.
+A sample `start.sh` is installed under `$(DATADIR)/pluto/start.sh` by
+`make install`; copy it to `~/.config/pluto/start.sh` and edit it to launch
+your apps, bar, etc.
 
 ## Layout
 

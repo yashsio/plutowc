@@ -101,12 +101,25 @@ monocle(Monitor *m)
 		wlr_scene_node_raise_to_top(&c->scene->node);
 }
 
+/*
+ * config.h is included by every translation unit, so each static config table
+ * has a distinct address per module.  Layouts must therefore be compared by
+ * value, not by pointer identity.
+ */
+static int
+same_layout(const Layout *a, const Layout *b)
+{
+	return a == b || (a && b && a->arrange == b->arrange
+			&& !strcmp(a->symbol, b->symbol));
+}
+
 void
 setlayout(const Arg *arg)
 {
 	if (!P.selmon)
 		return;
-	if (!arg || !arg->v || arg->v != P.selmon->lt[P.selmon->sellt])
+	if (!arg || !arg->v
+			|| !same_layout(arg->v, P.selmon->lt[P.selmon->sellt]))
 		P.selmon->sellt ^= 1;
 	if (arg && arg->v)
 		P.selmon->lt[P.selmon->sellt] = (Layout *)arg->v;

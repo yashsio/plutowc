@@ -18,22 +18,36 @@ jobs:
       - name: Build and test
         run: nix build .# -L
 
+      - name: Build XWayland package
+        run: nix build .#pluto-xwayland -L
+
       - name: Flake checks
         run: nix flake check -L
+
+      - name: Build with warnings as errors
+        run: |
+          nix develop -c make clean
+          nix develop -c make CFLAGS=-Werror
+          nix develop -c make test
+
+      - name: Headless smoke test
+        run: nix develop -c tests/smoke.sh
 
       - name: Build with XWayland support
         run: |
           nix develop -c make clean
-          nix develop -c make XWAYLAND=-DXWAYLAND XLIBS="xcb xcb-icccm"
+          nix develop -c make XWAYLAND=-DXWAYLAND XLIBS="xcb xcb-icccm" CFLAGS=-Werror
+          nix develop -c make test
 
-      - name: Headless smoke test
+      - name: XWayland smoke test
+        run: nix develop -c tests/smoke.sh --xwayland
+
+      - name: Install and dist checks
         run: |
-          nix develop -c bash -c '
-            export XDG_RUNTIME_DIR="$(mktemp -d)"
-            export WLR_BACKENDS=headless WLR_RENDERER=pixman WLR_LIBINPUT_NO_DEVICES=1
-            ./pluto &
-            pid=$!
-            sleep 2
-            kill -TERM "$pid"
-            wait "$pid"
-          '
+          nix develop -c make dist
+          tar -tzf pluto-*.tar.gz | grep -q 'start.sh'
+          tar -tzf pluto-*.tar.gz | grep -q 'flake.lock'
+          dest=$(mktemp -d)
+          nix develop -c make install DESTDIR="$dest"
+          test -x "$dest/usr/local/bin/pluto"
+          test -f "$dest/usr/local/share/pluto/start.sh"

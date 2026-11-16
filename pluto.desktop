@@ -2,4 +2,7 @@
 Name=Pluto
 Comment=Small dynamic tiling compositor for Wayland
 Exec=pluto
+TryExec=pluto
 Type=Application
+DesktopNames=Pluto;
+Keywords=wayland;compositor;tiling;

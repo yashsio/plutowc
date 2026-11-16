@@ -295,8 +295,10 @@ unmapnotify(struct wl_listener *listener, void *data)
 	}
 #endif
 
-	wlr_scene_node_destroy(&c->image_capture_scene->tree.node);
-	c->image_capture_scene = NULL;
+	if (c->image_capture_scene) {
+		wlr_scene_node_destroy(&c->image_capture_scene->tree.node);
+		c->image_capture_scene = NULL;
+	}
 	c->image_capture_source = NULL;
 	wlr_scene_node_destroy(&c->scene->node);
 	client_surface(c)->data = NULL;

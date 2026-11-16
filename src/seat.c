@@ -427,22 +427,45 @@ createpointer(struct wlr_pointer *pointer)
 		if (libinput_device_config_middle_emulation_is_available(device))
 			libinput_device_config_middle_emulation_set_enabled(device, middle_button_emulation);
 
-		if (libinput_device_config_scroll_get_methods(device) != LIBINPUT_CONFIG_SCROLL_NO_SCROLL)
-			libinput_device_config_scroll_set_method(device, scroll_method);
+		{
+			enum libinput_config_scroll_method methods =
+					libinput_device_config_scroll_get_methods(device);
+			if (methods != LIBINPUT_CONFIG_SCROLL_NO_SCROLL
+					&& (methods & scroll_method))
+				libinput_device_config_scroll_set_method(device, scroll_method);
+			else if (methods != LIBINPUT_CONFIG_SCROLL_NO_SCROLL)
+				pointerlog(WLR_INFO, "pointer %s does not support scroll method %d",
+						name, scroll_method);
+		}
 
 		/* Leave the click method alone unless config.h picks one.  Most
 		 * modern clickpads default to clickfinger, which (unlike
 		 * button areas) does not swallow taps in the bottom of the pad. */
-		if (click_method >= 0
-				&& libinput_device_config_click_get_methods(device) != LIBINPUT_CONFIG_CLICK_METHOD_NONE)
-			libinput_device_config_click_set_method(device,
-					(enum libinput_config_click_method)click_method);
+		if (click_method >= 0) {
+			enum libinput_config_click_method methods =
+					libinput_device_config_click_get_methods(device);
+			if (methods != LIBINPUT_CONFIG_CLICK_METHOD_NONE
+					&& (methods & click_method))
+				libinput_device_config_click_set_method(device,
+						(enum libinput_config_click_method)click_method);
+			else if (methods != LIBINPUT_CONFIG_CLICK_METHOD_NONE)
+				pointerlog(WLR_INFO, "pointer %s does not support click method %d",
+						name, click_method);
+		}
 
-		if (libinput_device_config_send_events_get_modes(device))
-			libinput_device_config_send_events_set_mode(device, send_events_mode);
+		{
+			uint32_t modes = libinput_device_config_send_events_get_modes(device);
+			if (modes & send_events_mode)
+				libinput_device_config_send_events_set_mode(device, send_events_mode);
+			else if (modes)
+				pointerlog(WLR_INFO, "pointer %s does not support send-events mode %u",
+						name, (unsigned)send_events_mode);
+		}
 
 		if (libinput_device_config_accel_is_available(device)) {
-			libinput_device_config_accel_set_profile(device, accel_profile);
+			uint32_t profiles = libinput_device_config_accel_get_profiles(device);
+			if (profiles & accel_profile)
+				libinput_device_config_accel_set_profile(device, accel_profile);
 			libinput_device_config_accel_set_speed(device, accel_speed);
 		}
 

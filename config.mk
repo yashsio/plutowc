@@ -25,9 +25,10 @@ WLR_LIBS = `$(PKG_CONFIG) --libs wlroots-0.20`
 #	-I$(PWD)/wlroots/0.20/include/wlroots-0.20
 #WLR_LIBS = -Wl,-rpath,$(PWD)/wlroots/0.20/lib64 -L$(PWD)/wlroots/0.20/lib64 -lwlroots-0.20
 
-XWAYLAND =
-XLIBS =
-# Uncomment to build XWayland support
+XWAYLAND ?=
+XLIBS ?=
+# Uncomment to build XWayland support.  The Nix flake also provides a
+# pluto-xwayland package with this enabled.
 #XWAYLAND = -DXWAYLAND
 #XLIBS = xcb xcb-icccm
 

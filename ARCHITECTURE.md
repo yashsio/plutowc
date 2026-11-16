@@ -115,6 +115,11 @@ configuration order deterministic.
 Configuration is compile-time only.  There is no config parser, IPC or reload
 protocol.  Rebuild after editing `config.h`.
 
+Because `config.h` is textually included in every translation unit, each
+`static const` table has a distinct address per module.  Never compare config
+objects by address; compare by value, or give the table a single shared
+definition.  In particular, layout identity must not rely on `&layouts[i]`.
+
 ## Adding a feature
 
 - A new window-manager policy: add the handler to `src/layout.c` (or a new

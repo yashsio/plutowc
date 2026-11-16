@@ -23,7 +23,12 @@
  * See LICENSE file for copyright and license details.
  */
 #include <getopt.h>
+#include <inttypes.h>
 #include <stdarg.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <string.h>
 #include <libinput.h>
 #include <limits.h>
 #include <linux/input-event-codes.h>

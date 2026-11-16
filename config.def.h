@@ -200,3 +200,10 @@ static const Axis axes[] = {
 	{ 0, 0, NULL, {0} },
 	/* does nothing, but the array cannot be empty */
 };
+
+/* Compile-time invariants for the tables above. */
+_Static_assert(TAGCOUNT > 0 && TAGCOUNT < 32,
+		"TAGCOUNT must be between 1 and 31");
+_Static_assert(LENGTH(layouts) > 0, "at least one layout is required");
+_Static_assert(LENGTH(rules) > 0, "at least one rule is required");
+_Static_assert(LENGTH(monrules) > 0, "at least one monitor rule is required");

@@ -1,24 +1,26 @@
 # Tracking and porting upstream
 
-Pluto is a fork of [dwl].  The repository keeps dwl's history:
+Pluto is a fork of [dwl].  This repository has a single `main` branch and does
+not retain upstream dwl history or configure an upstream remote.  It is based
+on dwl `5f12a5c` (`0.10-dev`, targeting wlroots 0.20).
 
-- `master` is the untouched upstream branch.
-- `pluto` is this compositor.  It is based on dwl `5f12a5c` (`0.10-dev`,
-  targeting wlroots 0.20).
-
-The goal is to stay rebasable: upstream bug fixes and wlroots compatibility
-changes should be portable in minutes, not by re-reading a 4000-line file.
+The goal is to keep upstream fixes portable: find the upstream function, then
+apply the change to the module that owns it.  Keep a separate dwl clone as the
+reference rather than adding an upstream remote to this repository.
 
 ## Syncing with upstream
 
 ```sh
-git fetch origin                 # origin is the dwl remote
-git switch pluto
-git rebase origin/master         # or merge, if you prefer
+git clone https://codeberg.org/dwl/dwl /tmp/dwl-upstream
+cd /tmp/dwl-upstream
+git log --oneline -- dwl.c
+git diff <old>..<new> -- dwl.c
 ```
 
-When a conflict is in a split module, use the upstream function name to find
-the module that owns it:
+Port each change into the module below.  XWayland-only changes stay inside the
+`#ifdef XWAYLAND` blocks or `src/xwayland.c`.
+
+Use the upstream function name to find the module that owns it:
 
 | upstream area                    | Pluto module |
 |----------------------------------|--------------|
@@ -70,9 +72,8 @@ about generated protocol files.
 
 ## Versioning
 
-`VERSION` in `config.mk` is Pluto's own release line (`0.1.0`).  dwl's tags
-remain in the repository for history and rebasing, but they are not used for
-Pluto's `--version` output.
+`VERSION` in `config.mk` is Pluto's own release line (`0.1.0`).  This
+repository does not carry dwl tags, and `--version` is not derived from them.
 
 ## Keeping the fork healthy
 
@@ -83,7 +84,7 @@ Pluto's `--version` output.
   part of wlroots.  `layout_math.c` must stay wlroots-free.
 - Every new protocol manager gets its own struct and listener objects; do not
   bolt it onto `main.c`.
-- Rebase conflicts are a signal that a module boundary is wrong.  Fix the
-  boundary rather than re-copying a large upstream block into one file.
+- A change that does not fit one module is a signal that the boundary is wrong.
+  Fix the boundary rather than copying a large upstream block into one file.
 
 [dwl]: https://codeberg.org/dwl/dwl

@@ -29,7 +29,6 @@
               pixman
               libdrm
               udev
-              libxcb-wm
             ];
 
             makeFlags = [
@@ -52,8 +51,23 @@
               mainProgram = "pluto";
             };
           };
+
+          pluto-xwayland = pluto.overrideAttrs (old: {
+            pname = "pluto-xwayland";
+            nativeBuildInputs = (old.nativeBuildInputs or []) ++ [ pkgs.makeWrapper ];
+            buildInputs = (old.buildInputs or []) ++ [ pkgs.libxcb-wm pkgs.xwayland ];
+            preBuild = (old.preBuild or "") + ''
+              export XWAYLAND=-DXWAYLAND
+              export XLIBS="xcb xcb-icccm"
+            '';
+            postInstall = (old.postInstall or "") + ''
+              wrapProgram $out/bin/pluto \
+                --prefix PATH : ${pkgs.lib.makeBinPath [ pkgs.xwayland ]}
+            '';
+          });
         in {
-          inherit pluto;
+          pluto = pluto;
+          pluto-xwayland = pluto-xwayland;
           default = pluto;
         });
 
@@ -62,7 +76,10 @@
           inputsFrom = [ self.packages.${pkgs.stdenv.hostPlatform.system}.pluto ];
           packages = with pkgs; [
             clang-tools
+            foot
             gdb
+            libxcb-wm
+            xwayland
           ];
         };
       });
